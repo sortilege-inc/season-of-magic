@@ -74,6 +74,8 @@
       hp: (S.hp && S.hp.current != null) ? S.hp.current : ((S.hp && S.hp.max) || 0),
       temp: (S.hp && S.hp.temp) || 0,
       slots: slots, hitDice: hd, uses: uses, conditions: (S.conditions || []).slice(),
+      death: { s: 0, f: 0 },   // NOTE(season-of-magic): death saves, empty by default
+      inspiration: 0,          // NOTE(season-of-magic): Heroic Inspiration, empty by default
       edition: S.defaultEdition || "2014",
       econ: { open: 0, phase: "pre", used: { reaction: 0, action: 0, bonus: 0, move: 0 } }
     };
@@ -88,6 +90,8 @@
       }
     } catch (e) {}
     if (!d.econ || !d.econ.used) d.econ = { open: 0, phase: "pre", used: { reaction: 0, action: 0, bonus: 0, move: 0 } };
+    if (!d.death || typeof d.death !== "object") d.death = { s: 0, f: 0 };
+    if (d.inspiration == null) d.inspiration = 0;
     return d;
   }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(PS)); } catch (e) {} }
@@ -294,6 +298,7 @@
     root.appendChild(vitals());
     var body = el("div", "sheet-body");
     body.appendChild(colLeft());
+    body.appendChild(colMid());
     body.appendChild(colRight());
     root.appendChild(body);
     buildTray();
@@ -375,6 +380,32 @@
       });
       v.appendChild(hdBlock);
     }
+    // Death saves — NOTE(season-of-magic)
+    var ds = el("div", "vstat death-block");
+    function dsPips(kind, filled) {
+      var out = "";
+      for (var k = 0; k < 3; k++) {
+        out += '<button class="ds-pip ' + kind + (k < filled ? " on" : "") +
+               '" data-ds="' + kind + '" data-idx="' + k + '" title="' +
+               (kind === "s" ? "Success" : "Failure") + ' ' + (k + 1) + '"></button>';
+      }
+      return out;
+    }
+    ds.innerHTML = '<b>Death Saves</b>' +
+      '<div class="ds-rows">' +
+        '<div class="ds-row"><span class="ds-lbl">Succ</span>' + dsPips("s", PS.death.s) + '</div>' +
+        '<div class="ds-row"><span class="ds-lbl">Fail</span>' + dsPips("f", PS.death.f) + '</div>' +
+      '</div>' +
+      '<button class="ds-roll" title="Roll a death saving throw">Roll</button>';
+    v.appendChild(ds);
+
+    // Heroic Inspiration — NOTE(season-of-magic)
+    var insp = el("div", "vstat insp-block" + (PS.inspiration ? " on" : ""));
+    insp.innerHTML = '<b>Heroic Inspiration</b>' +
+      '<button class="insp-toggle" title="Toggle Heroic Inspiration">' +
+      (PS.inspiration ? "✦" : "◇") + '</button>';
+    v.appendChild(insp);
+
     // Senses
     if (S.senses) { var sBlk = stat("Senses", S.senses); sBlk.classList.add("wide"); v.appendChild(sBlk); }
     // Rest button
@@ -424,10 +455,16 @@
     if (S.notes) c.appendChild(notesBlock());
     return c;
   }
-  function colRight() {
-    var c = el("div", "sheet-col right");
+  // NOTE(season-of-magic): three columns, so a landscape tablet shows abilities,
+  // what you do on your turn, and your features/gear side by side without scrolling.
+  function colMid() {
+    var c = el("div", "sheet-col mid");
     if ((S.attacks && S.attacks.length) || S.spellcasting) c.appendChild(attacksBlock());
     if (S.spellcasting) c.appendChild(spellsBlock());
+    return c;
+  }
+  function colRight() {
+    var c = el("div", "sheet-col right");
     if (S.features && S.features.length) c.appendChild(featuresBlock());
     if (S.feats && S.feats.length) c.appendChild(featsBlock());
     if (S.equipment && S.equipment.length || S.currency) c.appendChild(gearBlock());
@@ -518,6 +555,9 @@
     (S.features || []).forEach(function (f, i) {
       if (!inEd(f)) return;
       var c = featCost(f); if (c === "none") return;
+      // NOTE(season-of-magic): action:"attack" puts a feature in the Attack tab —
+      // for riders applied to a weapon attack, e.g. the Arcane Shot options.
+      if (c === "attack") { buckets["Attack"].push(featureRow(f, i)); return; }
       buckets[c === "bonus" ? "Bonus Action" : c === "reaction" ? "Reaction" : "Action"].push(featureRow(f, i));
     });
     var order = ["Attack", "Action", "Bonus Action", "Reaction"];
@@ -635,7 +675,8 @@
 
   function featureRow(f, i) {
     var it = el("div", "feature");
-    it.setAttribute("data-econ", featCost(f));
+    var econ = featCost(f);
+    it.setAttribute("data-econ", econ === "attack" ? "action" : econ);
     it.setAttribute("data-cat", featCat(f));
     var usesHtml = "";
     if (f.uses) {
@@ -650,6 +691,15 @@
     it.innerHTML = '<div class="feat-h">' +
       '<button class="feat-name" data-feat-expand="' + i + '" title="Show details">' + esc(f.name) + '</button>' +
       (f.source ? '<span class="feat-src">' + esc(f.source) + '</span>' : '') + usesHtml + trig + '</div>' +
+      // NOTE(season-of-magic): compact stat line for features that hit or force a save
+      ((f.damage || f.save || f.range)
+        ? '<div class="feat-meta">' +
+            (f.damage ? '<button class="feat-dmg rollable" data-dmg="' + esc(f.damage) + '" data-dmg-name="' +
+               esc(f.name) + '">' + esc(f.damage) + (f.damageType ? " " + esc(f.damageType) : "") + '</button>' : '') +
+            (f.save ? '<span class="feat-save">' + esc(f.save) + '</span>' : '') +
+            (f.range ? '<span class="feat-range">' + esc(f.range) + '</span>' : '') +
+          '</div>'
+        : '') +
       (f.text ? '<div class="feat-body">' + nl2br(f.text) + '</div>' : '');
     return it;
   }
@@ -759,6 +809,19 @@
       if (t.hasAttribute("data-slot")) { toggleSlot(t.getAttribute("data-slot")); return; }
       // feature use pips
       if (t.hasAttribute("data-use")) { toggleUse(parseInt(t.getAttribute("data-use"), 10)); return; }
+      // death saves — NOTE(season-of-magic)
+      if (t.hasAttribute("data-ds")) {
+        var kind = t.getAttribute("data-ds"), idx = parseInt(t.getAttribute("data-idx"), 10);
+        // clicking pip n sets the count to n+1, or clears back to n when it was already on
+        PS.death[kind] = (PS.death[kind] === idx + 1) ? idx : idx + 1;
+        save(); render(); return;
+      }
+      if (t.classList.contains("ds-roll")) { rollDeathSave(); return; }
+      if (t.classList.contains("insp-toggle")) {
+        PS.inspiration = PS.inspiration ? 0 : 1; save(); render();
+        setMsg("Heroic Inspiration", PS.inspiration ? "gained" : "spent", PS.inspiration ? "✦" : "—");
+        return;
+      }
       // spell tabs — switch visible level without a full re-render
       if (t.hasAttribute("data-spell-tab")) {
         var lv = t.getAttribute("data-spell-tab"); activeSpellTab = lv;
@@ -832,10 +895,37 @@
       if (PS.temp > 0) { var absorbed = Math.min(PS.temp, dmg); PS.temp -= absorbed; dmg -= absorbed; }
       PS.hp = Math.max(0, PS.hp - dmg);
     } else {
+      var wasDown = PS.hp <= 0;
       PS.hp = Math.min((S.hp && S.hp.max) || PS.hp + amt, PS.hp + amt);
+      // NOTE(season-of-magic): any healing off 0 clears the death-save track
+      if (wasDown && PS.hp > 0 && (PS.death.s || PS.death.f)) {
+        PS.death = { s: 0, f: 0 }; save(); render(); return;
+      }
     }
     save(); refreshHp();
   }
+  // NOTE(season-of-magic): 10+ succeeds; a nat 20 pops you back up on 1 HP,
+  // a nat 1 costs two failures. Three of either ends it.
+  function rollDeathSave() {
+    var v = d20();
+    var note;
+    if (v === 20) {
+      PS.death = { s: 0, f: 0 }; PS.hp = Math.max(1, PS.hp);
+      note = "Natural 20 — conscious at 1 HP";
+    } else if (v === 1) {
+      PS.death.f = Math.min(3, PS.death.f + 2); note = "Natural 1 — two failures";
+    } else if (v >= 10) {
+      PS.death.s = Math.min(3, PS.death.s + 1); note = "Success";
+    } else {
+      PS.death.f = Math.min(3, PS.death.f + 1); note = "Failure";
+    }
+    if (PS.death.s >= 3) note += " — stable";
+    if (PS.death.f >= 3) note += " — dead";
+    save(); render();
+    setMsg("Death Save", note, v);
+    logLine("Death save: " + v + " — " + note);
+  }
+
   function refreshHp() {
     var cur = document.querySelector(".hp-cur"); if (cur) cur.textContent = PS.hp;
     var tmp = document.querySelector(".tmp-val"); if (tmp) tmp.textContent = PS.temp;
@@ -873,6 +963,7 @@
   function longRest() {
     PS.hp = (S.hp && S.hp.max) || PS.hp;
     PS.temp = 0;
+    PS.death = { s: 0, f: 0 };   // NOTE(season-of-magic)
     Object.keys(PS.slots).forEach(function (k) { PS.slots[k] = 0; });
     Object.keys(PS.uses).forEach(function (k) { PS.uses[k] = 0; });
     // hit dice: recover half of total (5e), rounded down, min 1

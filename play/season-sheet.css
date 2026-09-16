@@ -1,0 +1,152 @@
+/* ============================================================
+   season-sheet.css — Season of Magic's own layer over the
+   a-gibbous-moon sheet engine. Loaded AFTER sheet.css so the
+   engine's own file stays syncable upstream; everything this
+   site changes about the play sheet lives here.
+
+   Two jobs:
+   1. LANDSCAPE TABLET FIRST. The sheet is read on a tablet lying
+      on its side at the table — roughly 1024x768 through
+      1366x1024. The engine ships a 1120px two-column sheet, which
+      on that screen wastes the width and spends the height. Here
+      it becomes three columns (who you are · what you do on your
+      turn · what you carry), a vitals row on a fixed 12-column
+      grid, and tighter vertical rhythm whenever the viewport is
+      short.
+   2. Styling for the blocks this site added — death saves,
+      Heroic Inspiration, and the feature stat line that Arcane
+      Shot options use in the Attack tab.
+   ============================================================ */
+
+/* ------------------------------------------------- canvas width */
+#sheet, .tray-inner{ max-width:1560px; }
+
+/* ------------------------------------------------- columns
+   Declared here in full because sheet.css's own max-width:820px
+   rule would otherwise win on source order at small sizes. */
+.sheet-body{ grid-template-columns:minmax(0,1fr); gap:1.1rem; }
+@media (min-width:760px){
+  .sheet-body{ grid-template-columns:minmax(0,1fr) minmax(0,1.3fr); }
+}
+@media (min-width:1000px){
+  .sheet-body{
+    grid-template-columns:minmax(0,0.92fr) minmax(0,1.24fr) minmax(0,1fr);
+    gap:1rem;
+  }
+  .sheet-col{ gap:1rem; }
+}
+
+/* ------------------------------------------------- vitals
+   A 12-column grid so the row packs predictably instead of
+   flex-wrapping into ragged rows:
+     row 1  initiative · AC · speed · prof · HP · hit dice
+     row 2  death saves · inspiration · senses
+     row 3  rest buttons        row 4  turn tracker            */
+@media (min-width:1000px){
+  .vitals{
+    display:grid; grid-template-columns:repeat(12,1fr);
+    gap:0.55rem; margin-bottom:1.1rem;
+  }
+  .vitals > .vstat{ grid-column:span 2; min-width:0; }
+  .vitals > .death-block{ grid-column:span 3; }
+  .vitals > .insp-block{ grid-column:span 2; }
+  .vitals > .vstat.wide{ grid-column:span 12; }
+  /* senses is the only other .wide block the engine emits; it does not need a
+     row to itself, so row 2 becomes death saves · inspiration · senses · rests */
+  .vitals > .vstat.wide:not(.rest-block):not(.econ-panel){ grid-column:span 4; text-align:left; }
+  /* the engine stacks the rest/JSON buttons in a vertical column, which costs
+     five rows of height on a screen that has width to spare */
+  .vitals > .rest-block{
+    grid-column:span 3;
+    flex-direction:row; flex-wrap:wrap; gap:0.35rem;
+    align-items:center; justify-content:flex-start; align-content:center;
+  }
+  .vitals > .rest-block button{ flex:0 0 auto; }
+}
+
+/* ------------------------------------------------- short viewports
+   Landscape tablets are wide but SHORT. Buy back vertical space
+   without shrinking any touch target below ~32px.               */
+@media (min-width:1000px) and (max-height:920px){
+  .sheet-head{ padding:1.1rem 0 0.9rem; gap:1.1rem; }
+  .sh-portrait{ width:84px; height:84px; padding:4px; }
+  .sh-id h1{ font-size:clamp(1.7rem,3.4vw,2.3rem); }
+  .vstat{ padding:0.42rem 0.5rem; }
+  .vstat b{ font-size:0.52rem; margin-bottom:0.15rem; }
+  .vstat .v{ font-size:1.3rem; }
+  .hp-block .hp-cur{ font-size:1.4rem; }
+  .hp-block .hp-max{ font-size:1rem; }
+  .sheet-card{ padding:0.85rem 0.95rem; }
+  .sheet-card > h2{ margin-bottom:0.5rem; }
+  .play-body{ padding-bottom:132px; }
+  .tray-inner{ min-height:78px; padding:0.5rem clamp(1rem,3vw,2rem); }
+  .tm-total{ font-size:1.9rem; }
+}
+
+/* the turn tracker is a big empty bar until it is opened — on a
+   short screen, collapse it to its label until then */
+@media (min-width:1000px) and (max-height:920px){
+  .econ-panel:not(.open){ padding:0.3rem 0.5rem; }
+  .econ-panel:not(.open) .econ-btns{ gap:0.3rem; }
+}
+
+/* ------------------------------------------------- death saves */
+.death-block .ds-rows{ display:flex; flex-direction:column; gap:0.22rem; align-items:center; margin:0.1rem 0 0.3rem; }
+.death-block .ds-row{ display:flex; align-items:center; gap:0.3rem; }
+.death-block .ds-lbl{
+  font-family:var(--caps); text-transform:uppercase; letter-spacing:0.1em;
+  font-size:0.5rem; color:var(--ink-faint); width:2.4em; text-align:right;
+}
+.ds-pip{
+  width:15px; height:15px; border-radius:50%; padding:0; cursor:pointer;
+  background:transparent; border:1px solid var(--edge); transition:.12s;
+}
+.ds-pip:hover{ transform:scale(1.15); }
+.ds-pip.s.on{ background:var(--olive-deep); border-color:var(--olive-deep); }
+.ds-pip.f.on{ background:var(--rust); border-color:var(--rust-deep); }
+.ds-roll{
+  font-family:var(--caps); text-transform:uppercase; letter-spacing:0.1em;
+  font-size:0.55rem; cursor:pointer; border:1px solid var(--edge);
+  background:var(--vellum); color:var(--ink-soft);
+  border-radius:4px; padding:0.22rem 0.7rem; transition:.15s;
+}
+.ds-roll:hover{ border-color:var(--rust); color:var(--rust-deep); }
+
+/* ------------------------------------------------- heroic inspiration */
+.insp-block{ display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.insp-toggle{
+  font-size:1.5rem; line-height:1; cursor:pointer; padding:0.1rem 0.4rem;
+  background:transparent; border:0; color:var(--edge); transition:.15s;
+}
+.insp-toggle:hover{ transform:scale(1.12); color:var(--gold); }
+.insp-block.on{ border-color:var(--gold); background:linear-gradient(180deg, rgba(224,190,98,0.3), rgba(224,190,98,0.12)); }
+.insp-block.on .insp-toggle{ color:var(--gold); text-shadow:0 0 12px rgba(224,190,98,0.8); }
+
+/* ------------------------------------------------- feature stat line
+   Used by features that hit or force a save — the Arcane Shot
+   options, which sit in the Attack tab rather than under Actions. */
+.feat-meta{
+  display:flex; flex-wrap:wrap; align-items:center; gap:0.4rem;
+  margin:0.3rem 0 0.1rem;
+}
+.feat-dmg{
+  font-family:var(--disp); font-weight:700; font-size:0.9rem; cursor:pointer;
+  border:1px solid var(--edge); background:var(--vellum); color:var(--rust-deep);
+  border-radius:4px; padding:0.1rem 0.5rem; transition:.15s;
+}
+.feat-dmg:hover{ border-color:var(--rust); background:rgba(168,67,42,0.08); }
+.feat-save, .feat-range{
+  font-family:var(--caps); text-transform:uppercase; letter-spacing:0.08em;
+  font-size:0.54rem; color:var(--ink-faint);
+}
+.feat-save{ color:var(--teal-deep); }
+
+/* ------------------------------------------------- touch
+   Tablets report hover:none — the engine already un-hides the
+   Cast/Trigger buttons there; make sure the ones this site adds
+   are comfortable to hit too. */
+@media (hover:none){
+  .ds-pip{ width:19px; height:19px; }
+  .ds-roll{ padding:0.35rem 0.85rem; }
+  .insp-toggle{ font-size:1.7rem; padding:0.2rem 0.5rem; }
+}
