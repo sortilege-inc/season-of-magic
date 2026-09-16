@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- gold ground -->
+  <rect width="64" height="64" rx="8" fill="#b8912f"/>
+  <rect x="3" y="3" width="58" height="58" rx="6" fill="none" stroke="#f3e0a8" stroke-width="1.6"/>
+  <circle cx="32" cy="32" r="22" fill="#e0be62"/>
+  <!-- the green voice: a sprig coming up -->
+  <path d="M32 50V26" stroke="#12703f" stroke-width="3.4" stroke-linecap="round"/>
+  <path d="M32 36c-9 0-12-5-12-11 7 0 12 3 12 11z" fill="#1aa15a"/>
+  <path d="M32 30c8 0 11-4 11-10-6 0-11 3-11 10z" fill="#12703f"/>
+  <!-- the blue voice: a spark over it -->
+  <path d="M32 6l2.6 7.4L42 16l-7.4 2.6L32 26l-2.6-7.4L22 16l7.4-2.6z" fill="#1566a8"/>
+</svg>

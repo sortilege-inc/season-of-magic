@@ -1,0 +1,523 @@
+/* ============================================================
+   SEASON OF MAGIC — a Dungeons & Dragons chronicle (2024 rules)
+   season.css — an illuminated manuscript in high summer.
+
+   The rule of the theme: GOLD IS THE GROUND, GREEN AND BLUE ARE
+   THE INK. Gilding carries structure — rules, frames, ornaments,
+   the nav bar, the title cartouche — and every voice on top of it
+   is either verdant (growth, the world, headings) or azure (water,
+   magic, links). Keep the two inks bright and the gold warm; when
+   something needs to read as secret rather than alive, it goes
+   sapphire (the Veil).
+   ============================================================ */
+
+:root{
+  /* --- gilding (the ground) --- */
+  --gild-deep:  #6f5313;
+  --gild-2:     #8f6d1c;
+  --gild:       #b8912f;
+  --gild-lit:   #e0be62;
+  --gilt-glow:  #f3e0a8;
+  --gold-soft:  rgba(184,145,47,0.55);
+  --gold-hair:  rgba(184,145,47,0.28);
+  --edge:       #cdb069;
+  --edge-soft:  rgba(184,145,47,0.24);
+  --edge-hair:  rgba(184,145,47,0.42);
+
+  /* --- vellum & ink --- */
+  --vellum:     #fbf3de;
+  --vellum-lit: #fffaef;
+  --vellum-2:   #f5e9cc;
+  --tan:        #ebdcb4;
+  --ink:        #182a1e;
+  --ink-2:      #2c4433;
+  --ink-soft:   #5d7064;
+  --ink-faint:  #93a396;
+
+  /* --- the green voice --- */
+  --verdant:      #12703f;
+  --verdant-lit:  #1aa15a;
+  --verdant-glow: #3fd489;
+  --verdant-soft: rgba(26,161,90,0.30);
+
+  /* --- the blue voice --- */
+  --azure:      #1566a8;
+  --azure-lit:  #2f9fd8;
+  --azure-deep: #0c3f6e;
+  --azure-soft: rgba(21,102,168,0.28);
+
+  /* --- registers --- */
+  --sapphire:     #2b4a8c;   /* Behind the Veil */
+  --sapphire-lit: #5f80c4;
+  --garnet:       #a63c28;   /* danger, damage, warnings */
+  --garnet-deep:  #7d2b1b;
+
+  --glow:        0 0 18px rgba(26,161,90,0.20);
+  --gleam:       0 0 26px rgba(224,190,98,0.34);
+  --shadow:      0 10px 34px rgba(46,62,38,0.18);
+  --shadow-deep: 0 20px 52px rgba(34,48,28,0.26);
+
+  --serif: "EB Garamond", Georgia, "Times New Roman", serif;
+  --disp:  "Cormorant Garamond", "EB Garamond", Georgia, serif;
+  --caps:  "Cinzel", "Cormorant Garamond", Georgia, serif;
+  --deco:  "Cinzel Decorative", "Cinzel", Georgia, serif;
+  --fell:  "EB Garamond", Georgia, serif;
+
+  /* --- play-engine bridge ---------------------------------------
+     play/sheet.css and play/dice.css are the D&D 5e engine lifted
+     from a-gibbous-moon, and they read that site's variable names.
+     These aliases re-point the whole engine at this palette; do NOT
+     rename them without editing sheet.css, and keep them in sync if
+     the engine is ever re-synced from upstream. */
+  --gold:       var(--gild);
+  --teal:       var(--azure);
+  --teal-deep:  var(--azure-deep);
+  --rust:       var(--garnet);
+  --rust-deep:  var(--garnet-deep);
+  --olive-deep: var(--verdant);
+  --oxblood:    #0d4f31;
+  --slate:      #4a6a84;
+  --moon:       var(--sapphire);
+}
+
+/* ------------------------------------------------------------ base */
+*{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{
+  margin:0;
+  font-family:var(--serif);
+  font-size:19px;
+  line-height:1.66;
+  color:var(--ink);
+  background-color:var(--vellum);
+  background-image:
+    /* gilt light off the top of the page */
+    radial-gradient(1200px 560px at 50% -10%, rgba(224,190,98,0.42), transparent 64%),
+    /* the green voice, rising from the left */
+    radial-gradient(1000px 760px at 4% 104%, rgba(26,161,90,0.15), transparent 62%),
+    /* the blue voice, off the right */
+    radial-gradient(900px 700px at 98% 22%, rgba(21,102,168,0.12), transparent 60%),
+    /* gold lattice */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cg fill='none' stroke='%23b8912f' stroke-width='1' opacity='0.15'%3E%3Cpath d='M32 0 L64 32 L32 64 L0 32 Z'/%3E%3Ccircle cx='32' cy='32' r='5.5'/%3E%3C/g%3E%3Cg fill='%2312703f' opacity='0.11'%3E%3Ccircle cx='0' cy='0' r='2.4'/%3E%3Ccircle cx='64' cy='0' r='2.4'/%3E%3Ccircle cx='0' cy='64' r='2.4'/%3E%3Ccircle cx='64' cy='64' r='2.4'/%3E%3C/g%3E%3C/svg%3E");
+  background-attachment:fixed, fixed, fixed, scroll;
+  min-height:100vh;
+}
+
+/* ------------------------------------------------------------ nav — a gilded band */
+.topnav{
+  position:sticky; top:0; z-index:50;
+  display:flex; flex-wrap:wrap; align-items:center; gap:0.1rem 1.25rem;
+  padding:0.62rem clamp(1rem,4vw,3rem);
+  background:linear-gradient(180deg, var(--gild-lit) 0%, var(--gild) 42%, var(--gild-2) 100%);
+  border-bottom:1px solid var(--gild-deep);
+  box-shadow:0 2px 0 rgba(255,246,214,0.45) inset, 0 6px 18px rgba(60,46,12,0.22);
+}
+.topnav .brand{
+  font-family:var(--deco); font-weight:700; letter-spacing:0.12em;
+  font-size:0.84rem; color:#123a24; margin-right:auto; white-space:nowrap;
+  text-shadow:0 1px 0 rgba(255,248,222,0.55);
+}
+.topnav a{
+  font-family:var(--caps); font-weight:500; font-size:0.7rem; letter-spacing:0.14em;
+  text-transform:uppercase; color:#1c3a29; text-decoration:none;
+  padding:0.22rem 0; border-bottom:2px solid transparent; transition:.18s;
+}
+.topnav a:hover{ color:#08321d; border-bottom-color:rgba(18,58,36,0.35); }
+.topnav a.active{ color:#062c19; border-bottom-color:var(--verdant); }
+
+/* ------------------------------------------------------------ shell */
+.wrap{ max-width:1180px; margin:0 auto; padding:0 clamp(1rem,4vw,3rem) 6rem; }
+.col{ max-width:780px; margin:0 auto; }
+
+/* ------------------------------------------------------------ masthead */
+.masthead{
+  text-align:center;
+  padding:clamp(2.2rem,6vw,4.2rem) 1rem clamp(1.4rem,3.5vw,2.4rem);
+  position:relative;
+}
+.eyebrow{
+  font-family:var(--caps); text-transform:uppercase; font-weight:600;
+  letter-spacing:0.38em; font-size:0.66rem; color:var(--azure-deep);
+  margin:0 0 1rem; padding-left:0.38em;
+}
+.eyebrow::before,.eyebrow::after{ content:"✦"; margin:0 0.8em; color:var(--gild); font-size:0.82em; }
+.masthead h1{
+  font-family:var(--deco); font-weight:700;
+  font-size:clamp(2rem,6vw,4rem); line-height:1.06;
+  margin:0; color:var(--verdant);
+  text-shadow:0 1px 0 var(--vellum-lit), 0 0 30px rgba(184,145,47,0.32);
+}
+.masthead .sub{
+  font-family:var(--disp); font-style:italic;
+  font-size:clamp(1.02rem,2.2vw,1.24rem); color:var(--ink-2);
+  margin:1.1rem auto 0; max-width:48ch; line-height:1.5;
+}
+.masthead .kicker{
+  font-family:var(--caps); letter-spacing:0.22em; text-transform:uppercase;
+  font-size:0.62rem; color:var(--ink-soft); margin-top:1rem;
+}
+
+/* the home cartouche — beaten gold, green title, blue eyebrow */
+.cartouche{ position:relative; display:inline-block; padding:1.5rem 2.8rem; }
+.home-mast .cartouche{
+  background:
+    linear-gradient(158deg, #e8cf82 0%, #cba842 26%, #ad8929 52%, #dcbc63 76%, #94721e 100%);
+  border:1px solid var(--gild-deep);
+  border-radius:3px;
+  box-shadow:var(--shadow-deep), inset 0 1px 0 rgba(255,250,232,0.62);
+}
+.home-mast .cartouche::before, .home-mast .cartouche::after{
+  content:""; position:absolute; pointer-events:none; border:1px solid rgba(255,250,232,0.5);
+}
+.home-mast .cartouche::before{ inset:6px; }
+.home-mast .cartouche::after{ inset:10px; border-color:rgba(111,83,19,0.45); }
+.home-mast .eyebrow{ color:var(--azure-deep); }
+.home-mast .eyebrow::before,.home-mast .eyebrow::after{ color:#5c440f; }
+.home-mast h1{ color:#0d3d26; text-shadow:0 1px 0 rgba(255,250,232,0.55); }
+
+/* pages other than home: a plain double rule, no gold slab */
+.masthead:not(.home-mast) .eyebrow{ color:var(--azure); }
+
+/* divider — a gilt rule with a leaf */
+.flourish{
+  display:flex; align-items:center; gap:1rem;
+  margin:2.2rem auto; max-width:40rem;
+  font-size:0.9rem; color:var(--gild);
+}
+.flourish::before, .flourish::after{
+  content:""; flex:1; height:1px;
+  background:linear-gradient(90deg, transparent, var(--gold-soft), transparent);
+}
+.flourish .star::before{ content:"\2766"; color:var(--verdant-lit); font-size:1.1rem; }
+
+/* ------------------------------------------------------------ panels */
+.panel{
+  background:linear-gradient(180deg, var(--vellum-lit), var(--vellum));
+  border:1px solid var(--edge);
+  border-radius:3px;
+  box-shadow:var(--shadow);
+  padding:clamp(1.6rem,4vw,3rem);
+  position:relative;
+}
+.panel::after{ /* the illuminator's inner rule */
+  content:""; position:absolute; inset:7px; border:1px solid var(--edge-soft);
+  border-radius:2px; pointer-events:none;
+}
+.panel > *:first-child{ margin-top:0; }
+.panel > *:last-child{ margin-bottom:0; }
+
+/* ------------------------------------------------------------ headings + prose */
+article h1,article h2,article h3,article h4{
+  font-family:var(--caps); font-weight:600; color:var(--verdant);
+  line-height:1.26; letter-spacing:0.02em;
+}
+article h2{
+  margin:2.3rem 0 0.85rem;
+  padding-bottom:0.38rem; border-bottom:1px solid var(--gold-soft);
+  text-transform:uppercase; letter-spacing:0.13em; font-size:1rem;
+}
+article h3{
+  margin:1.6rem 0 0.5rem; color:var(--azure-deep);
+  letter-spacing:0.07em; text-transform:uppercase; font-size:0.88rem; font-weight:600;
+}
+article h4{
+  font-size:1.02rem; color:var(--ink-2); margin:1.2rem 0 0.4rem;
+  font-family:var(--disp); font-style:italic; letter-spacing:0;
+}
+article p{ margin:0 0 1.05rem; }
+article ul,article ol{ margin:0.4rem 0 1.15rem; padding-left:1.3rem; }
+article li{ margin:0.38rem 0; }
+article ul li::marker{ color:var(--verdant-lit); }
+article ul ul{ margin:0.3rem 0 0.5rem; }
+article strong{ color:var(--ink); font-weight:600; }
+article em{ color:var(--ink-2); }
+article a{ color:var(--azure); text-decoration:none; border-bottom:1px solid var(--azure-soft); }
+article a:hover{ color:var(--azure-lit); }
+article hr{ border:0; border-top:1px solid var(--gold-soft); margin:2rem 0; }
+blockquote{
+  font-family:var(--disp); font-style:italic; color:var(--ink-2); font-size:1.06rem;
+  border-left:3px solid var(--verdant-soft); margin:1.4rem 0;
+  padding:0.2rem 0 0.2rem 1.3rem; line-height:1.55;
+}
+
+/* lede paragraph — a gilded versal */
+.lede{ font-size:1.16rem; color:var(--ink); }
+.lede::first-letter{
+  font-family:var(--deco); font-weight:700; float:left;
+  font-size:3.6rem; line-height:0.84;
+  padding:0.2rem 0.6rem 0 0; color:var(--gild); text-shadow:var(--gleam);
+}
+.lede-block{ font-size:1.1rem; }
+.lede-block p:first-of-type::first-letter{
+  font-family:var(--deco); font-weight:700; float:left;
+  font-size:3.6rem; line-height:0.84;
+  padding:0.2rem 0.6rem 0 0; color:var(--gild); text-shadow:var(--gleam);
+}
+
+/* provenance tags — `SET`, `SOURCE`, `OPEN` … in Keeper's notes */
+article code, .empty code{
+  font-family:var(--caps); font-weight:600; font-size:0.62rem; letter-spacing:0.12em;
+  text-transform:uppercase; padding:0.12rem 0.45rem; border-radius:2px;
+  border:1px solid var(--edge); color:var(--ink-2);
+  background:rgba(184,145,47,0.12); white-space:nowrap;
+}
+article code.tag-set{ color:#0d4f31; border-color:var(--verdant-soft); background:rgba(26,161,90,0.14); }
+article code.tag-source{ color:var(--azure-deep); border-color:var(--azure-soft); background:rgba(21,102,168,0.11); }
+article code.tag-open{ color:var(--garnet-deep); border-color:rgba(166,60,40,0.45); background:rgba(166,60,40,0.12); }
+article code.tag-yours, article code.tag-mine{ color:var(--sapphire); border-color:rgba(43,74,140,0.45); background:rgba(43,74,140,0.11); }
+
+/* ------------------------------------------------------------ wiki refs */
+.ref{
+  color:var(--azure); text-decoration:none;
+  border-bottom:1px solid var(--azure-soft);
+  transition:.15s;
+}
+.ref:hover{ color:var(--verdant); border-bottom-color:var(--verdant-lit); background:rgba(26,161,90,0.08); }
+.ref-open{ /* unresolved link — a name without a page yet */
+  color:var(--ink-soft); border-bottom:1px dotted var(--ink-faint); cursor:help;
+}
+
+/* ------------------------------------------------------------ portraits */
+.portrait-frame{
+  float:right; width:min(320px,42%); margin:0.3rem 0 1.4rem 1.8rem;
+  padding:9px; background:var(--tan);
+  border:1px solid var(--gild); box-shadow:var(--shadow);
+  position:relative;
+}
+.portrait-frame::after{ content:""; position:absolute; inset:4px; border:1px solid rgba(255,250,232,0.6); pointer-events:none; }
+.portrait-frame img{ display:block; width:100%; height:auto; background:var(--vellum-2); }
+.portrait-frame figcaption{
+  font-family:var(--caps); text-transform:uppercase; letter-spacing:0.16em;
+  font-size:0.6rem; color:var(--ink-soft); text-align:center; margin-top:0.55rem;
+}
+@media (max-width:620px){ .portrait-frame{ float:none; width:100%; margin:0 0 1.5rem; } }
+
+.hero-img{
+  width:100%; max-height:420px; object-fit:cover;
+  border:1px solid var(--gild); box-shadow:var(--shadow);
+  margin-bottom:2rem;
+}
+
+/* ------------------------------------------------------------ meta + chips */
+.meta{
+  font-family:var(--caps); text-transform:uppercase; letter-spacing:0.16em;
+  font-size:0.66rem; color:var(--ink-soft); margin:0.4rem 0 0;
+}
+.meta .sep{ color:var(--ink-faint); margin:0 0.6em; }
+.tagrow{ display:flex; flex-wrap:wrap; gap:0.4rem; margin:0.4rem 0 1.3rem; }
+.chip{
+  font-family:var(--caps); font-size:0.6rem; letter-spacing:0.11em; text-transform:uppercase;
+  color:var(--verdant); background:rgba(26,161,90,0.10);
+  border:1px solid var(--verdant-soft); border-radius:2px; padding:0.2rem 0.62rem;
+}
+.chip.cold{ color:var(--azure-deep); background:rgba(21,102,168,0.09); border-color:var(--azure-soft); }
+
+/* ------------------------------------------------------------ play button */
+.play-btn{
+  display:inline-flex; align-items:center; gap:0.55rem;
+  font-family:var(--caps); text-transform:uppercase; letter-spacing:0.16em;
+  font-size:0.66rem; font-weight:600; text-decoration:none;
+  color:#0d3d26; margin:0 0 1.4rem;
+  padding:0.58rem 1.2rem; border-radius:3px;
+  border:1px solid var(--gild-deep);
+  background:linear-gradient(180deg, var(--gild-lit), var(--gild));
+  box-shadow:inset 0 1px 0 rgba(255,250,232,0.6), var(--shadow);
+  transition:.18s;
+}
+.play-btn:hover{
+  background:linear-gradient(180deg, var(--verdant-lit), var(--verdant));
+  color:var(--vellum-lit); border-color:var(--verdant); box-shadow:var(--glow);
+}
+.play-btn .pb-ico{ font-size:0.95rem; }
+
+/* ------------------------------------------------------------ card grids */
+.grid{ display:grid; gap:1.1rem; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); margin:1.6rem 0; }
+.card{
+  display:block; text-decoration:none; color:inherit;
+  background:linear-gradient(180deg, var(--vellum-lit), var(--vellum-2));
+  border:1px solid var(--edge); padding:1.1rem 1.2rem; border-radius:3px;
+  transition:.2s; position:relative;
+}
+.card:hover{ border-color:var(--verdant-lit); transform:translateY(-2px); box-shadow:var(--shadow-deep); }
+.card .cat{ font-family:var(--caps); text-transform:uppercase; letter-spacing:0.18em; font-size:0.58rem; color:var(--azure); }
+.card h3{ font-family:var(--caps); font-weight:600; color:var(--verdant); margin:0.35rem 0 0.5rem; font-size:1.06rem; letter-spacing:0.02em; }
+.card p{ margin:0; font-size:0.92rem; color:var(--ink-soft); line-height:1.5; }
+.card .num{ position:absolute; top:0.5rem; right:0.9rem; font-family:var(--deco); font-weight:700; font-size:1.45rem; color:var(--gold-soft); }
+
+/* grouped index sections */
+.group-h{
+  font-family:var(--caps); text-transform:uppercase; letter-spacing:0.13em; font-weight:600;
+  font-size:1rem; color:var(--verdant); margin:2.6rem 0 0.3rem;
+  display:flex; align-items:center; gap:0.85rem;
+}
+.group-h::before{ content:"✦"; font-size:0.72rem; color:var(--gild); }
+.group-h::after{ content:""; flex:1; height:1px; background:linear-gradient(90deg, var(--gold-soft), transparent); }
+.group-sub{ font-family:var(--disp); font-style:italic; color:var(--ink-soft); font-size:0.98rem; margin:0 0 1rem; max-width:64ch; line-height:1.55; }
+
+/* portrait cards (people) */
+.pgrid{ display:grid; gap:1.2rem; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); margin:1.6rem 0; }
+.pcard{ text-decoration:none; color:inherit; text-align:center; }
+.pcard .frame{
+  aspect-ratio:1/1; background:var(--vellum-2); border:1px solid var(--gild);
+  display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative;
+  box-shadow:var(--shadow); transition:.2s;
+}
+.pcard:hover .frame{ border-color:var(--verdant-lit); box-shadow:var(--glow); }
+.pcard .frame img{ width:100%; height:100%; object-fit:cover; }
+.pcard .frame .initial{ font-family:var(--deco); font-weight:700; font-size:2.6rem; color:var(--gold-soft); }
+.pcard .nm{ font-family:var(--caps); font-size:0.84rem; letter-spacing:0.05em; color:var(--ink); margin-top:0.55rem; display:block; }
+.pcard .rl{ font-family:var(--disp); font-style:italic; font-size:0.8rem; color:var(--ink-soft); }
+
+/* two-column index list */
+.tlist{ columns:2; column-gap:2.4rem; margin:1.4rem 0; }
+@media (max-width:640px){ .tlist{ columns:1; } }
+.tlist a{ display:block; break-inside:avoid; color:var(--azure); text-decoration:none; padding:0.38rem 0; border-bottom:1px solid var(--edge-soft); }
+.tlist a:hover{ color:var(--verdant); }
+.tlist a .rl{ float:right; font-family:var(--caps); font-size:0.58rem; letter-spacing:0.13em; text-transform:uppercase; color:var(--ink-faint); }
+
+/* chronicle list */
+.chron{ margin:1.6rem 0; }
+.chron a{
+  display:flex; gap:1.2rem; align-items:baseline; text-decoration:none; color:inherit;
+  padding:1rem 0.4rem; border-bottom:1px solid var(--edge-soft); transition:.2s;
+  scroll-margin-top:5.5rem;
+}
+.chron a:hover{ background:rgba(26,161,90,0.07); padding-left:0.9rem; }
+.chron .no{ font-family:var(--deco); font-weight:700; font-size:1.6rem; color:var(--gild); min-width:2.4ch; text-align:right; }
+.chron .body h3{ font-family:var(--caps); font-weight:600; color:var(--verdant); margin:0 0 0.25rem; font-size:1.04rem; letter-spacing:0.02em; }
+.chron .body .dt{ font-family:var(--caps); font-size:0.6rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--azure); }
+.chron .body p{ margin:0.35rem 0 0; color:var(--ink-soft); font-size:0.92rem; }
+
+/* empty state */
+.empty{
+  text-align:center; margin:2.4rem auto; max-width:54ch;
+  padding:2.4rem 1.6rem;
+  border:1px dashed var(--edge); border-radius:3px;
+  background:linear-gradient(180deg, rgba(255,250,239,0.8), rgba(245,233,204,0.6));
+}
+.empty .mark{ display:block; font-family:var(--deco); font-weight:700; font-size:2rem; color:var(--gold-soft); line-height:1; margin-bottom:0.7rem; }
+.empty h3{ font-family:var(--caps); font-weight:600; text-transform:uppercase; letter-spacing:0.16em; font-size:0.84rem; color:var(--verdant); margin:0 0 0.7rem; }
+.empty p{ font-family:var(--disp); font-style:italic; font-size:1rem; color:var(--ink-soft); margin:0 auto; line-height:1.6; max-width:44ch; }
+.empty p + p{ margin-top:0.8rem; }
+
+/* prev/next */
+.pager{ display:flex; justify-content:space-between; gap:1rem; margin-top:3rem; padding-top:1.4rem; border-top:1px solid var(--gold-soft); }
+.pager a{ text-decoration:none; color:var(--azure); max-width:46%; }
+.pager a:hover{ color:var(--verdant); }
+.pager .dir{ font-family:var(--caps); text-transform:uppercase; letter-spacing:0.18em; font-size:0.58rem; color:var(--ink-faint); display:block; }
+.pager .nx{ text-align:right; margin-left:auto; }
+
+/* breadcrumb */
+.crumb{ font-family:var(--caps); text-transform:uppercase; letter-spacing:0.16em; font-size:0.62rem; color:var(--ink-soft); margin:1.5rem 0 0; }
+.crumb a{ color:var(--azure); text-decoration:none; }
+.crumb .sep{ margin:0 0.6em; color:var(--gild); }
+
+/* footer */
+.foot{
+  text-align:center; margin-top:4rem; padding:2rem 1rem; color:var(--ink-soft);
+  font-family:var(--caps); text-transform:uppercase; letter-spacing:0.18em; font-size:0.58rem;
+  border-top:1px solid var(--gold-soft);
+}
+.foot .mark{ color:var(--verdant-lit); font-size:1rem; letter-spacing:0.4em; display:block; margin-bottom:0.6rem; }
+
+/* section intro text on index pages */
+.intro{ font-family:var(--disp); font-style:italic; color:var(--ink-2); font-size:1.08rem; line-height:1.55; max-width:62ch; }
+
+/* ------------------------------------------------------------ optional spine tally */
+.tally{ display:flex; flex-wrap:wrap; gap:0.55rem; margin:1.6rem 0 2rem; justify-content:center; }
+.tally .mark-cell{
+  width:2.5rem; height:2.5rem; display:flex; align-items:center; justify-content:center;
+  font-family:var(--deco); font-weight:700; font-size:0.9rem; color:var(--gold-soft);
+  border:1px solid var(--edge); background:var(--vellum-2);
+  transform:rotate(45deg); border-radius:3px;
+}
+.tally .mark-cell span{ transform:rotate(-45deg); }
+.tally .mark-cell.taken{ color:var(--vellum-lit); background:var(--verdant); border-color:var(--verdant-lit); box-shadow:var(--glow); }
+.tally-legend{
+  font-family:var(--caps); text-transform:uppercase; letter-spacing:0.15em; font-size:0.58rem;
+  color:var(--ink-soft); text-align:center; margin:-0.9rem 0 2rem;
+}
+
+/* ------------------------------------------------------------ at-the-table pages */
+.principle{ border-left:3px solid var(--verdant-soft); padding:0.1rem 0 0.1rem 1.2rem; margin:1.8rem 0; }
+.principle h3{ margin-top:0; color:var(--verdant); }
+
+/* ------------------------------------------------------------ Behind the Veil */
+.topnav a.veil{ color:#17305e; }
+.topnav a.veil::before{ content:"✵ "; }
+.topnav a.veil:hover{ color:#0c1f45; border-bottom-color:rgba(23,48,94,0.4); }
+.topnav a.veil.active{ color:#0c1f45; border-bottom-color:var(--sapphire); }
+
+.gm-mast h1{ color:var(--sapphire); }
+.gm-mast .eyebrow{ color:var(--sapphire); }
+.gm-banner{
+  display:flex; gap:0.9rem; align-items:flex-start;
+  background:linear-gradient(180deg, rgba(43,74,140,0.11), rgba(43,74,140,0.05));
+  border:1px solid rgba(43,74,140,0.36); border-left:3px solid var(--sapphire);
+  border-radius:3px; padding:0.9rem 1.1rem; margin:0 0 1.5rem;
+  font-size:0.94rem; line-height:1.55; color:var(--ink-2);
+}
+.gm-banner .seal{ font-size:1.35rem; color:var(--sapphire); line-height:1; margin-top:0.1rem; }
+.gm-banner b{ color:var(--sapphire); }
+.gm-panel{ background:linear-gradient(180deg, #fbf8ee, #f2f1e4); }
+.gm-panel::after{ border-color:rgba(43,74,140,0.22); }
+.gm-panel h2{ color:var(--sapphire); border-bottom-color:rgba(43,74,140,0.3); }
+.gm-panel h3{ color:#3b5aa0; }
+.gm-panel a{ color:var(--sapphire); }
+.gm-panel li.todo{ list-style:none; margin-left:-1rem; color:var(--ink-2); }
+
+/* ------------------------------------------------------------ tables */
+.tablewrap{ overflow-x:auto; margin:1.4rem 0; border:1px solid var(--edge-soft); border-radius:3px; }
+.tablewrap table{ border-collapse:collapse; width:100%; font-size:0.86rem; }
+.tablewrap th{
+  font-family:var(--caps); text-transform:uppercase; letter-spacing:0.07em; font-size:0.6rem;
+  color:var(--verdant); background:rgba(184,145,47,0.14); padding:0.5rem 0.6rem; text-align:left;
+  border-bottom:1px solid var(--gold-soft); white-space:nowrap; position:sticky; top:0;
+}
+.tablewrap td{ padding:0.45rem 0.6rem; border-bottom:1px solid var(--edge-soft); color:var(--ink-2); }
+.tablewrap tr:hover td{ background:rgba(26,161,90,0.06); }
+
+/* epigraph */
+.epigraph{
+  font-family:var(--disp); font-style:italic; color:var(--ink-2);
+  font-size:1.1rem; line-height:1.6; text-align:center;
+  max-width:56ch; margin:0.4rem auto 2rem; padding-bottom:1.4rem;
+  border-bottom:1px solid var(--gold-soft);
+}
+
+.footnote{
+  font-family:var(--disp); color:var(--ink-soft);
+  font-size:0.88rem; line-height:1.6;
+  max-width:60ch; margin:2.2rem auto 0; padding-top:1rem;
+  border-top:1px solid var(--edge-soft);
+}
+
+.source-note{
+  font-family:var(--caps); text-transform:uppercase; letter-spacing:0.13em;
+  font-size:0.56rem; color:var(--ink-faint); margin:1.8rem 0 0; padding-top:0.9rem;
+  border-top:1px solid var(--edge-soft);
+}
+
+/* ------------------------------------------------------------ play pages */
+/* play/sheet.css is loaded AFTER this file, so every rule here that re-skins the
+   engine's own chrome is written with `body.play-body` in front of it to win on
+   specificity rather than order. */
+.play-body{ background-attachment:fixed, fixed, fixed, scroll; }
+body.play-body .play-bar{
+  position:sticky; top:0; z-index:60;
+  display:flex; align-items:center; gap:1.1rem;
+  padding:0.55rem clamp(0.8rem,3vw,2rem);
+  background:linear-gradient(180deg, var(--gild-lit), var(--gild-2));
+  border-bottom:1px solid var(--gild-deep);
+  box-shadow:0 2px 0 rgba(255,246,214,0.4) inset, 0 6px 16px rgba(60,46,12,0.2);
+  backdrop-filter:none;
+}
+body.play-body .play-bar .brand{ font-family:var(--deco); font-weight:700; font-size:0.82rem; letter-spacing:0.1em; color:#123a24; }
+body.play-body .play-bar .spacer{ flex:1; }
+body.play-body .play-bar a{
+  font-family:var(--caps); text-transform:uppercase; letter-spacing:0.13em;
+  font-size:0.66rem; color:#1c3a29; text-decoration:none;
+}
+body.play-body .play-bar a:hover{ color:#062c19; text-decoration:underline; }
+
+@media print{ .topnav, .play-bar{ display:none } }

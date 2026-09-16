@@ -1,0 +1,74 @@
+/* ============================================================
+   dice.css — animated d20 / damage dice, themed to the crescent
+   parchment. Companion to dice.js (game-agnostic roller).
+   The d20 is drawn as a facetted pentagon; damage dice are tiles.
+   ============================================================ */
+.dice-stage { display: flex; flex-wrap: wrap; align-items: center; gap: var(--dice-gap, 10px); }
+
+.dice-die {
+  width: var(--dice-size, 54px); height: var(--dice-size, 54px);
+  border-radius: 6px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--caps, "Cinzel", Georgia, serif);
+  font-size: calc(var(--dice-size, 54px) * 0.42); font-weight: 700; line-height: 1;
+  border: 1px solid var(--gold, #b08d4c);
+  background: var(--vellum, #f7f0df); color: var(--ink, #2c2620);
+  position: relative; will-change: transform; user-select: none; flex: 0 0 auto;
+}
+
+.dice-die.rolling { animation: dice-tumble 0.5s linear infinite; }
+@keyframes dice-tumble {
+  0%   { transform: translateY(0)    rotate(0deg); }
+  25%  { transform: translateY(-5px) rotate(-13deg); }
+  50%  { transform: translateY(0)    rotate(11deg); }
+  75%  { transform: translateY(-3px) rotate(-7deg); }
+  100% { transform: translateY(0)    rotate(0deg); }
+}
+.dice-die.settling { animation: dice-settle 0.34s cubic-bezier(.2,1.5,.4,1); }
+@keyframes dice-settle {
+  0% { transform: scale(0.7); } 60% { transform: scale(1.14); } 100% { transform: scale(1); }
+}
+
+/* the die that "won" (kept, in adv/dis) gets a glow */
+.dice-die.high { box-shadow: 0 0 14px rgba(31,122,134,0.4); }
+.dice-die.low  { opacity: 0.5; }
+
+/* ---- d20 (pentagon) shape --------------------------------- */
+.dice-die.shape-d12,
+.dice-die.shape-d20 { background: transparent !important; border: none !important; box-shadow: none !important; overflow: visible; }
+.dice-die.shape-d12 .dice-svg,
+.dice-die.shape-d20 .dice-svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.dice-die.shape-d12 .dice-poly,
+.dice-die.shape-d20 .dice-poly {
+  fill: var(--vellum, #f7f0df); stroke: var(--gold, #b08d4c);
+  stroke-width: 4; stroke-linejoin: round;
+}
+.dice-die.shape-d12 .dice-facet,
+.dice-die.shape-d20 .dice-facet { fill: none; stroke: var(--gold, #b08d4c); stroke-width: 1.4; opacity: 0.4; }
+.dice-die.shape-d12 .dice-num,
+.dice-die.shape-d20 .dice-num {
+  position: absolute; left: 0; right: 0; top: 60%; transform: translateY(-50%);
+  text-align: center; line-height: 1;
+}
+
+/* the d20 — Iznik teal */
+.dice-die.d20.shape-d20 .dice-poly { fill: rgba(31,122,134,0.14); stroke: var(--teal, #1f7a86); }
+.dice-die.d20 { color: var(--teal-deep, #14606b); }
+.dice-die.d20.high.shape-d20 .dice-poly { fill: rgba(31,122,134,0.28); filter: drop-shadow(0 0 4px rgba(47,150,163,0.9)); }
+
+/* natural 20 / natural 1 */
+.dice-die.nat20.shape-d20 .dice-poly { fill: rgba(176,141,76,0.3); stroke: var(--gold, #b08d4c); stroke-width: 6; }
+.dice-die.nat20 { color: var(--rust-deep, #8a3320); }
+.dice-die.nat1.shape-d20 .dice-poly { fill: rgba(168,67,42,0.18); stroke: var(--rust, #a8432a); stroke-width: 5; }
+.dice-die.nat1 { color: var(--rust, #a8432a); }
+
+/* damage dice (plain tiles) */
+.dice-die.dmg { background: rgba(168,67,42,0.1); border-color: var(--rust, #a8432a); color: var(--rust-deep, #8a3320); }
+.dice-die.mod {
+  background: var(--tan, #e3d5b4); border-color: var(--gold, #b08d4c); color: var(--ink-2, #4a4136);
+  font-size: calc(var(--dice-size, 54px) * 0.34);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dice-die.rolling, .dice-die.settling { animation: none; }
+}
