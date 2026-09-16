@@ -37,31 +37,57 @@
 }
 
 /* ------------------------------------------------- vitals
-   A 12-column grid so the row packs predictably instead of
-   flex-wrapping into ragged rows:
-     row 1  initiative · AC · speed · prof · HP · hit dice
-     row 2  death saves · inspiration · senses
-     row 3  rest buttons        row 4  turn tracker            */
+   ONE row. Senses moved under the skills card and Reset/JSON moved into the
+   header (both in sheet.js), which frees exactly the width the remaining nine
+   blocks need on a 12-column grid:
+     initiative · AC · speed · prof · HP(2) · hit dice · death saves(2) ·
+     inspiration · rests(2)                                              */
 @media (min-width:1000px){
   .vitals{
     display:grid; grid-template-columns:repeat(12,1fr);
-    gap:0.55rem; margin-bottom:1.1rem;
+    gap:0.5rem; margin-bottom:1rem; align-items:stretch;
   }
-  .vitals > .vstat{ grid-column:span 2; min-width:0; }
-  .vitals > .death-block{ grid-column:span 3; }
-  .vitals > .insp-block{ grid-column:span 2; }
-  .vitals > .vstat.wide{ grid-column:span 12; }
-  /* senses is the only other .wide block the engine emits; it does not need a
-     row to itself, so row 2 becomes death saves · inspiration · senses · rests */
-  .vitals > .vstat.wide:not(.rest-block):not(.econ-panel){ grid-column:span 4; text-align:left; }
-  /* the engine stacks the rest/JSON buttons in a vertical column, which costs
-     five rows of height on a screen that has width to spare */
-  .vitals > .rest-block{
-    grid-column:span 3;
-    flex-direction:row; flex-wrap:wrap; gap:0.35rem;
-    align-items:center; justify-content:flex-start; align-content:center;
+  .vitals > .vstat{ grid-column:span 1; min-width:0; }
+  .vitals > .hp-block,
+  .vitals > .death-block,
+  .vitals > .rest-block{ grid-column:span 2; }
+  .vitals > .econ-panel{ grid-column:1 / -1; }
+
+  /* the labels are the binding constraint at a twelfth of the width */
+  .vitals > .vstat > b{ font-size:0.5rem; letter-spacing:0.055em; }
+
+  /* death saves: Roll sits beside the pip rows rather than under them, so the
+     block stops being the tallest thing in the row */
+  .vitals > .death-block{
+    display:grid; grid-template-columns:auto auto;
+    grid-template-areas:"lbl lbl" "rows roll";
+    align-items:center; justify-items:center; column-gap:0.45rem;
   }
-  .vitals > .rest-block button{ flex:0 0 auto; }
+  .vitals > .death-block > b{ grid-area:lbl; }
+  .vitals > .death-block .ds-rows{ grid-area:rows; margin:0; }
+  .vitals > .death-block .ds-roll{ grid-area:roll; }
+
+  /* two rest buttons, stacked and full width of their two columns */
+  .vitals > .rest-block{ flex-direction:column; gap:0.3rem; justify-content:center; }
+  .vitals > .rest-block button{ width:100%; }
+}
+
+/* ------------------------------------------------- header tools
+   Reset and the JSON import/export, right-aligned across from the class line. */
+.sh-id{ position:relative; }
+.sh-tools{ display:flex; flex-wrap:wrap; gap:0.35rem; margin:0 0 0.5rem; }
+@media (min-width:760px){
+  .sh-tools{ position:absolute; top:0; right:0; margin:0; }
+}
+.sh-tools .btn-reset, .sh-tools .btn-io{ font-size:0.55rem; padding:0.3rem 0.6rem; }
+
+/* ------------------------------------------------- senses under the skills
+   Size and any non-computed senses read here, a line under the engine's
+   computed passive perception. */
+.senses-line{
+  font-family:var(--caps); text-transform:uppercase;
+  font-size:0.66rem; letter-spacing:0.08em; color:var(--ink-soft);
+  margin-top:0.2rem; text-align:right;
 }
 
 /* ------------------------------------------------- short viewports

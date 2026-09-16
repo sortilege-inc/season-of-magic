@@ -334,6 +334,15 @@
       : '';
     h.innerHTML = port +
       '<div class="sh-id">' +
+        // NOTE(season-of-magic): Reset and the JSON import/export live up here,
+        // across from the class line — they are setup, not things reached for
+        // mid-turn, and down in the vitals they were costing a whole row.
+        '<div class="sh-tools">' +
+          '<button class="btn-reset" title="Revert to the shipped character and clear all play-state">Reset</button>' +
+          '<button class="btn-io btn-dl" title="Download this character + current state as a JSON file">\u2B73 JSON</button>' +
+          '<button class="btn-io btn-ul" title="Upload a character or saved play-state JSON">\u2B71 JSON</button>' +
+          '<input type="file" id="agm-upload" accept="application/json,.json" style="display:none">' +
+        '</div>' +
         '<div class="sh-eyebrow">' + esc(classLine()) + '</div>' +
         '<h1>' + esc(S.name || "Unnamed") + '</h1>' +
         (S.player ? '<div class="sh-player">played by ' + esc(S.player) + '</div>' : '') +
@@ -406,16 +415,11 @@
       (PS.inspiration ? "✦" : "◇") + '</button>';
     v.appendChild(insp);
 
-    // Senses
-    if (S.senses) { var sBlk = stat("Senses", S.senses); sBlk.classList.add("wide"); v.appendChild(sBlk); }
-    // Rest button
+    // Rests — NOTE(season-of-magic): senses moved under the skills card and the
+    // Reset/JSON buttons into the header, so the vitals fit on a single row.
     var rest = el("div", "vstat rest-block");
     rest.innerHTML = '<button class="btn-short" title="Restore short-rest features &amp; pact slots; spend Hit Dice to heal">Short Rest</button>' +
-      '<button class="btn-rest" title="Restore HP, slots, hit-dice &amp; uses to full">Long Rest</button>' +
-      '<button class="btn-reset" title="Revert to the shipped character and clear all play-state">Reset</button>' +
-      '<button class="btn-io btn-dl" title="Download this character + current state as a JSON file">⭳ JSON</button>' +
-      '<button class="btn-io btn-ul" title="Upload a character or saved play-state JSON">⭱ JSON</button>' +
-      '<input type="file" id="agm-upload" accept="application/json,.json" style="display:none">';
+      '<button class="btn-rest" title="Restore HP, slots, hit-dice &amp; uses to full">Long Rest</button>';
     v.appendChild(rest);
     v.appendChild(econPanel(init));
     return v;
@@ -512,6 +516,8 @@
     b.appendChild(list);
     var pp = 10 + abilMod("wis") + ((chosen["perception"] || 0) ? pb * chosen["perception"] : 0);
     b.appendChild(el("div", "passive", "Passive Perception <b>" + pp + "</b>"));
+    // NOTE(season-of-magic): senses/size read here, under the skills they belong with
+    if (S.senses) b.appendChild(el("div", "senses-line", esc(S.senses)));
     return b;
   }
 
