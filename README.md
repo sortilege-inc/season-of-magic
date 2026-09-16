@@ -1,7 +1,7 @@
 # Season of Magic
 
-A static campaign wiki + **playable D&D 2024 (5.5e) character sheets** for the
-homebrew high-fantasy campaign **Season of Magic**. Illuminated-manuscript
+A static campaign wiki + **playable D&D 2024 (5.5e) character sheets** for
+**Season of Magic**, a run of Forgotten Realms organized play on the 2024 rules. Illuminated-manuscript
 aesthetic: gold is the ground, bright green and blue are the ink.
 
 No build step in the repo — plain HTML, one stylesheet, and the play engine.
@@ -21,7 +21,7 @@ Section labels are evocative, and each directory slug matches its label.
 | `banners/` | **Banners** | Factions, courts and orders + index |
 | `realms/` | **Realms** | Gazetteer + index |
 | `hoard/` | **The Hoard** | Relics and treasure + index |
-| `arcana/` | **Arcana** | This table's homebrew rules — subclasses, spells, rulings |
+| `arcana/` | **Arcana** | Rules references, organizer handouts and table rulings |
 | `legendry/` | **Legendry** | Cosmology, history, myth |
 | `table/` | **At the Table** | Safety tools, session structure, character creation |
 | `veil/` | **Behind the Veil** | Keeper-only prep and campaign state |
