@@ -47,7 +47,7 @@
   --azure-soft: rgba(21,102,168,0.28);
 
   /* --- registers --- */
-  --sapphire:     #2b4a8c;   /* Behind the Veil */
+  --sapphire:     #2b4a8c;   /* Loose Threads — the owner’s own voice */
   --sapphire-lit: #5f80c4;
   --garnet:       #a63c28;   /* danger, damage, warnings */
   --garnet-deep:  #7d2b1b;
@@ -442,29 +442,32 @@ article code.tag-yours, article code.tag-mine{ color:var(--sapphire); border-col
 .principle{ border-left:3px solid var(--verdant-soft); padding:0.1rem 0 0.1rem 1.2rem; margin:1.8rem 0; }
 .principle h3{ margin-top:0; color:var(--verdant); }
 
-/* ------------------------------------------------------------ Behind the Veil */
-.topnav a.veil{ color:#17305e; }
-.topnav a.veil::before{ content:"✵ "; }
-.topnav a.veil:hover{ color:#0c1f45; border-bottom-color:rgba(23,48,94,0.4); }
-.topnav a.veil.active{ color:#0c1f45; border-bottom-color:var(--sapphire); }
+/* ------------------------------------------------------------ Loose Threads
+   The player-notes section. It keeps its own sapphire register — not because
+   it is secret, but so a page in the site owner's own voice never reads as
+   part of the record. */
+.topnav a.notes{ color:#17305e; }
+.topnav a.notes::before{ content:"\203B  "; }   /* ※ reference mark — always text, never a colour emoji */
+.topnav a.notes:hover{ color:#0c1f45; border-bottom-color:rgba(23,48,94,0.4); }
+.topnav a.notes.active{ color:#0c1f45; border-bottom-color:var(--sapphire); }
 
-.gm-mast h1{ color:var(--sapphire); }
-.gm-mast .eyebrow{ color:var(--sapphire); }
-.gm-banner{
+.note-mast h1{ color:var(--sapphire); }
+.note-mast .eyebrow{ color:var(--sapphire); }
+.note-banner{
   display:flex; gap:0.9rem; align-items:flex-start;
   background:linear-gradient(180deg, rgba(43,74,140,0.11), rgba(43,74,140,0.05));
   border:1px solid rgba(43,74,140,0.36); border-left:3px solid var(--sapphire);
   border-radius:3px; padding:0.9rem 1.1rem; margin:0 0 1.5rem;
   font-size:0.94rem; line-height:1.55; color:var(--ink-2);
 }
-.gm-banner .seal{ font-size:1.35rem; color:var(--sapphire); line-height:1; margin-top:0.1rem; }
-.gm-banner b{ color:var(--sapphire); }
-.gm-panel{ background:linear-gradient(180deg, #fbf8ee, #f2f1e4); }
-.gm-panel::after{ border-color:rgba(43,74,140,0.22); }
-.gm-panel h2{ color:var(--sapphire); border-bottom-color:rgba(43,74,140,0.3); }
-.gm-panel h3{ color:#3b5aa0; }
-.gm-panel a{ color:var(--sapphire); }
-.gm-panel li.todo{ list-style:none; margin-left:-1rem; color:var(--ink-2); }
+.note-banner .seal{ font-size:1.35rem; color:var(--sapphire); line-height:1; margin-top:0.1rem; }
+.note-banner b{ color:var(--sapphire); }
+.note-panel{ background:linear-gradient(180deg, #fbf8ee, #f2f1e4); }
+.note-panel::after{ border-color:rgba(43,74,140,0.22); }
+.note-panel h2{ color:var(--sapphire); border-bottom-color:rgba(43,74,140,0.3); }
+.note-panel h3{ color:#3b5aa0; }
+.note-panel a{ color:var(--sapphire); }
+.note-panel li.todo{ list-style:none; margin-left:-1rem; color:var(--ink-2); }
 
 /* ------------------------------------------------------------ tables */
 .tablewrap{ overflow-x:auto; margin:1.4rem 0; border:1px solid var(--edge-soft); border-radius:3px; }

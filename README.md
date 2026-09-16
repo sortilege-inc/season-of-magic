@@ -24,7 +24,7 @@ Section labels are evocative, and each directory slug matches its label.
 | `arcana/` | **Arcana** | Rules references, organizer handouts and table rulings |
 | `legendry/` | **Legendry** | Cosmology, history, myth |
 | `table/` | **At the Table** | Safety tools, session structure, character creation |
-| `veil/` | **Behind the Veil** | Keeper-only prep and campaign state |
+| `threads/` | **Loose Threads** | The site owner's own player notes — theories and open questions |
 | `play/` | — | The playable 5e/5.5e sheet engine (see below) |
 
 To rename a section, edit `CATS` in the generator and `git mv` the directory.
