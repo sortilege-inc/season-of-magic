@@ -176,3 +176,26 @@
   .ds-roll{ padding:0.35rem 0.85rem; }
   .insp-toggle{ font-size:1.7rem; padding:0.2rem 0.5rem; }
 }
+
+/* ------------------------------------------------- notes card
+   The notes are provenance — where the sheet came from, what was advanced at
+   which level — not something read mid-turn, so the card ships collapsed and
+   its heading is the toggle. */
+.notes-card .notes-text{ display:none; }
+.notes-card.open .notes-text{ display:block; }
+.notes-toggle{ padding:0 !important; border:0 !important; }
+.notes-toggle > button{
+  /* a bare button that inherits the h2's own typography */
+  font:inherit; color:inherit; letter-spacing:inherit; text-transform:inherit;
+  background:transparent; border:0; padding:0; width:100%;
+  cursor:pointer; display:flex; align-items:center; justify-content:space-between;
+  gap:0.6rem; user-select:none; transition:.15s;
+}
+.notes-toggle > button:hover{ color:var(--rust-deep); }
+.notes-caret{
+  font-family:var(--caps); font-size:0.9rem; line-height:1;
+  color:var(--ink-faint); border:1px solid var(--edge); border-radius:4px;
+  width:1.4rem; height:1.4rem; display:inline-flex;
+  align-items:center; justify-content:center; flex:0 0 auto;
+}
+.notes-toggle > button:hover .notes-caret{ border-color:var(--rust); color:var(--rust-deep); }

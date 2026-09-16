@@ -135,6 +135,7 @@
   var activeSpellTab = null; // which spell level tab is showing (persists across re-renders)
   var activeFeatTab = null;  // which feature category tab is showing
   var activeAtkTab = null;   // which Attacks & Actions tab is showing
+  var notesOpen = false;     // NOTE(season-of-magic): the Notes card starts collapsed
   function featCat(f) {
     if (f && f.category) return f.category; // explicit override
     var s = ((f && f.source) || "").toLowerCase();
@@ -772,8 +773,19 @@
     return b;
   }
 
+  // NOTE(season-of-magic): Notes is provenance, not play — collapsed by default,
+  // its heading toggles it. Like the tab state above, the toggle survives a
+  // re-render but not a reload, so every visit opens with it shut.
   function notesBlock() {
     var b = card("Notes");
+    b.classList.add("notes-card");
+    if (notesOpen) b.classList.add("open");
+    var h = b.querySelector("h2");
+    h.className = "notes-toggle";
+    // a real <button>: the engine's click dispatch only matches "button, .rollable"
+    h.innerHTML = '<button data-notes-toggle="1" title="' +
+      (notesOpen ? "Hide the notes" : "Show the notes") + '">Notes' +
+      '<span class="notes-caret">' + (notesOpen ? "\u2212" : "+") + '</span></button>';
     b.appendChild(el("div", "notes-text", nl2br(S.notes)));
     return b;
   }
@@ -815,6 +827,8 @@
       if (t.hasAttribute("data-slot")) { toggleSlot(t.getAttribute("data-slot")); return; }
       // feature use pips
       if (t.hasAttribute("data-use")) { toggleUse(parseInt(t.getAttribute("data-use"), 10)); return; }
+      // notes card — NOTE(season-of-magic)
+      if (t.closest && t.closest("[data-notes-toggle]")) { notesOpen = !notesOpen; render(); return; }
       // death saves — NOTE(season-of-magic)
       if (t.hasAttribute("data-ds")) {
         var kind = t.getAttribute("data-ds"), idx = parseInt(t.getAttribute("data-idx"), 10);
